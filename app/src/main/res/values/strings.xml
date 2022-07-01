@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">TakeMyNote</string>
+
+    <!-- Generics -->
+    <string name="error_generic">Ocorreu um erro, tente novamente.</string>
+
+    <!-- Erros Firebase Authentication -->
+    <string name="There_is_no_user_record_corresponding_to_this_identifier">Nenhuma conta encontrada com este e-mail</string>
+    <string name="The_email_address_is_badly_formatted">Insira um e-mail válido.</string>
+    <string name="The_password_is_invalid">Senha inválida, tente novamente.</string>
+    <string name="The_email_address_is_already">Este e-mail já está em uso.</string>
+    <string name="Password_should_be_at_least_6_characters">Insira uma senha mais forte.</string>
+
+    <!-- Form Task Fragment -->
+    <string name="text_title_form_task_fragment">Nova Tarefa</string>
+    <string name="text_description_form_task_fragment">Descrição</string>
+    <string name="text_status_form_task_fragment">Status</string>
+    <string name="text_btn_save_form_task_fragment">Salvar</string>
+
+
+</resources>
