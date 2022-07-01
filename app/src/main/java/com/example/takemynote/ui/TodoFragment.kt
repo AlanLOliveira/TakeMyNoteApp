@@ -62,21 +62,20 @@ class TodoFragment : Fragment() {
             .child(FirebaseHelper.getIdUser() ?: "")
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
+                    if(snapshot.exists()) {
                         taskList.clear()
-                        for(snap in snapshot.children){
+                        for (snap in snapshot.children) {
                             val task = snap.getValue(Task::class.java) as Task
 
-                            if(task.status == 0) taskList.add(task)
+                            if (task.status == 0) taskList.add(task)
                         }
                         binding.textInfo.text = ""
 
                         taskList.reverse()
                         initAdapter()
-
-                    }else{
-                        binding.textInfo.text = "Nenhuma tarefa cadastrada."
                     }
+
+                    taskEmpty()
 
                     binding.progressBar.isVisible = false
                 }
@@ -86,6 +85,14 @@ class TodoFragment : Fragment() {
                 }
 
             })
+    }
+
+    private fun taskEmpty(){
+       binding.textInfo.text = if(taskList.isEmpty()){
+           getText(R.string.text_task_list_empty_todo_fragment)
+                  }else{
+                      ""
+                  }
     }
 
     private fun initAdapter(){
@@ -108,6 +115,12 @@ class TodoFragment : Fragment() {
                     .actionHomeFragmentToFormTaskFragment(task)
                 findNavController().navigate(action)
             }
+            TaskAdapter.SELECT_NEXT ->{
+                task.status = 1
+
+                updateTask(task)
+            }
+
         }
     }
 
@@ -123,10 +136,36 @@ class TodoFragment : Fragment() {
         taskAdapter.notifyDataSetChanged()
     }
 
+    private fun updateTask(task: Task) {
+        FirebaseHelper.getDatabase()
+            .child("task")
+            .child(FirebaseHelper.getIdUser() ?: "")
+            .child(task.id)
+            .setValue(task)
+            .addOnCompleteListener {task ->
+
+                if (task.isSuccessful) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Tarefa atualizado com sucesso",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {//Editando Tarefa
+                    Toast.makeText(requireContext(), "Erro ao Salva a tarefa", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                binding.progressBar.isVisible = false
+                Toast.makeText(requireContext(), "Erro ao Salva a tarefa", Toast.LENGTH_SHORT)
+
+            }
+
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 
 
 }

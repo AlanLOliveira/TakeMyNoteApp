@@ -13,9 +13,10 @@ import com.example.takemynote.R
 import com.example.takemynote.databinding.FragmentFormTaskBinding
 import com.example.takemynote.helper.FirebaseHelper
 import com.example.takemynote.model.Task
+import com.example.takemynote.ui.adapter.BaseFragment
 
 
-class FormTaskFragment : Fragment() {
+class FormTaskFragment : BaseFragment() {
 
     private val args: FormTaskFragmentArgs by navArgs()
 
@@ -46,11 +47,11 @@ class FormTaskFragment : Fragment() {
        args.task.let {
            if(it != null){
                task = it
+
                configTask()
            }
 
        }
-
 
    }
 
@@ -58,9 +59,24 @@ class FormTaskFragment : Fragment() {
         newTask = false
         statusTask = task.status
         binding.tvToolbar.text = "Editando Tarefa"
+        binding.edtDescricao.setText(task.description)
+        setStatus()
+    }
 
-       binding.edtDescricao.setText(task.description)
-
+    private fun setStatus(){
+        binding.radioGroup.check(
+            when (task.status){
+                0 -> {
+              R.id.rbAFazer
+                }
+                1 -> {
+                R.id.rbFazendo
+                }
+                else -> {
+                R.id.rbFeito
+                }
+           }
+        )
     }
 
     private fun initListeners() {
@@ -81,6 +97,8 @@ class FormTaskFragment : Fragment() {
         val description = binding.edtDescricao.text.toString().trim()
 
         if(description.isNotEmpty()){
+
+            hideKeyboard()
 
             binding.progressBar.isVisible = true
 
@@ -120,7 +138,6 @@ class FormTaskFragment : Fragment() {
                 Toast.makeText(requireContext(), "Erro ao Salva a tarefa", Toast.LENGTH_SHORT).show()
             }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

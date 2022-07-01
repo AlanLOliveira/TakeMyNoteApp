@@ -12,12 +12,13 @@ import com.example.takemynote.R
 import com.example.takemynote.databinding.FragmentRecoverAccountBinding
 import com.example.takemynote.databinding.FragmentRegisterBinding
 import com.example.takemynote.helper.FirebaseHelper
+import com.example.takemynote.ui.adapter.BaseFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 
-class RecoverAccountFragment : Fragment() {
+class RecoverAccountFragment : BaseFragment() {
 
     private var _binding: FragmentRecoverAccountBinding? = null
     private val binding get() = _binding!!
@@ -49,7 +50,10 @@ class RecoverAccountFragment : Fragment() {
     private fun validateData() {
         val email = binding.edtEmail.text.toString().trim()
            if (email.isNotEmpty()) {
-                binding.progressBar.isVisible = true
+
+               hideKeyboard()
+
+               binding.progressBar.isVisible = true
 
                 recoverAccountUser(email)
 

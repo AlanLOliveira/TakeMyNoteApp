@@ -13,12 +13,13 @@ import com.example.takemynote.R
 import com.example.takemynote.databinding.FragmentLoginBinding
 import com.example.takemynote.databinding.FragmentRegisterBinding
 import com.example.takemynote.helper.FirebaseHelper
+import com.example.takemynote.ui.adapter.BaseFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 
-class RegisterFragment : Fragment() {
+class RegisterFragment : BaseFragment() {
 
 
     private var _binding: FragmentRegisterBinding? = null
@@ -58,6 +59,8 @@ class RegisterFragment : Fragment() {
 
         if(email.isNotEmpty()){
             if (senha.isNotEmpty()){
+
+                hideKeyboard()
 
                 binding.progressBar.isVisible = true
 

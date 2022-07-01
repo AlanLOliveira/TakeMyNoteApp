@@ -13,11 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.takemynote.R
 import com.example.takemynote.databinding.FragmentLoginBinding
 import com.example.takemynote.helper.FirebaseHelper
+import com.example.takemynote.ui.adapter.BaseFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -48,6 +49,8 @@ class LoginFragment : Fragment() {
 
         if (email.isNotEmpty()) {
             if (senha.isNotEmpty()) {
+
+                hideKeyboard()
 
                 binding.progressBar.isVisible = true
 

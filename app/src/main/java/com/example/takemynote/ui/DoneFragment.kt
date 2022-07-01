@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.takemynote.R
 import com.example.takemynote.databinding.FragmentDoneBinding
 import com.example.takemynote.databinding.FragmentSplashBinding
 import com.example.takemynote.helper.FirebaseHelper
 import com.example.takemynote.model.Task
+import com.example.takemynote.ui.adapter.BaseFragment
 import com.example.takemynote.ui.adapter.TaskAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -20,7 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 
-class DoneFragment : Fragment() {
+class DoneFragment : BaseFragment() {
 
     private var _binding: FragmentDoneBinding? = null
     private val binding get() = _binding!!
@@ -63,10 +65,9 @@ class DoneFragment : Fragment() {
                         taskList.reverse()
                         initAdapter()
 
-                    }else{
-                        binding.textInfo.text = "Nenhuma tarefa cadastrada."
-                    }
 
+                    }
+                    taskEmpty()
                     binding.progressBar.isVisible = false
                 }
 
@@ -75,6 +76,14 @@ class DoneFragment : Fragment() {
                 }
 
             })
+    }
+
+    private fun taskEmpty(){
+        binding.textInfo.text = if(taskList.isEmpty()){
+            getText(R.string.text_task_list_empty_done_fragment)
+        }else{
+            ""
+        }
     }
 
     private fun initAdapter(){
@@ -92,7 +101,41 @@ class DoneFragment : Fragment() {
             TaskAdapter.SELECT_REMOVE ->{
                 deleteTask(task)
             }
+            TaskAdapter.SELECT_EDIT ->{
+                val action = HomeFragmentDirections
+                    .actionHomeFragmentToFormTaskFragment(task)
+                findNavController().navigate(action)
+            }
+            TaskAdapter.SELECT_BACK ->{
+                task.status = 1
+                updateTask(task)
+            }
         }
+    }
+
+    private fun updateTask(task: Task) {
+        FirebaseHelper.getDatabase()
+            .child("task")
+            .child(FirebaseHelper.getIdUser() ?: "")
+            .child(task.id)
+            .setValue(task)
+            .addOnCompleteListener {task ->
+
+                if (task.isSuccessful) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Tarefa atualizado com sucesso",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {//Editando Tarefa
+                    Toast.makeText(requireContext(), "Erro ao Salva a tarefa", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                binding.progressBar.isVisible = false
+                Toast.makeText(requireContext(), "Erro ao Salva a tarefa", Toast.LENGTH_SHORT)
+
+            }
+
     }
 
     private fun deleteTask(task: Task){
